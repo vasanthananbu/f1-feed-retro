@@ -42,6 +42,7 @@ export default function SideQuestPanel({ quests, onComplete, onDismiss }: SideQu
              </div>
              <div className="flex gap-4">
                <button 
+                 type="button"
                  onClick={() => onDismiss(currentQuest.id)}
                  className="text-[10px] font-black hover:text-cyan-500 transition-colors uppercase flex items-center gap-1"
                  title="Move to bottom list"
@@ -49,6 +50,7 @@ export default function SideQuestPanel({ quests, onComplete, onDismiss }: SideQu
                  Minimize [M]
                </button>
                <button 
+                 type="button"
                  onClick={() => onComplete(currentQuest.id)}
                  className="text-[10px] font-black hover:text-red-500 transition-colors uppercase"
                >
@@ -63,6 +65,7 @@ export default function SideQuestPanel({ quests, onComplete, onDismiss }: SideQu
           <div className="grid gap-3">
               {currentQuest.type === 'POLL' && currentQuest.options && currentQuest.options.map((option, idx) => (
                 <button
+                  type="button"
                   key={idx}
                   onClick={() => onComplete(currentQuest.id, idx)}
                   className="w-full p-4 border-4 border-[var(--border-primary)] hover:border-cyan-400 hover:bg-cyan-400/10 text-sm font-black text-[var(--text-primary)] transition-all uppercase flex items-center justify-between group"
@@ -74,6 +77,7 @@ export default function SideQuestPanel({ quests, onComplete, onDismiss }: SideQu
 
               {currentQuest.type === 'QUIZ' && currentQuest.options && currentQuest.options.map((option, idx) => (
                 <button
+                  type="button"
                   key={idx}
                   onClick={() => {
                     if (selectedAnswers[currentQuest.id] !== undefined) return;
@@ -93,6 +97,7 @@ export default function SideQuestPanel({ quests, onComplete, onDismiss }: SideQu
 
               {currentQuest.type === 'MOMENT' && (
                 <button
+                  type="button"
                   onClick={() => onComplete(currentQuest.id)}
                   className="w-full p-6 border-4 border-green-500 bg-green-500/10 text-green-400 text-lg font-black uppercase hover:bg-green-500/20 transition-all flex items-center justify-center gap-4 group"
                 >

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { Bot, Sparkles, Send, Terminal, Cpu } from 'lucide-react';
-import { GoogleGenAI } from "@google/genai";
+import { GoogleGenerativeAI } from "@google/generative-ai";
 import { LiveState } from '../types';
 
 interface AIInsightBotProps {
@@ -35,9 +35,9 @@ export default function AIInsightBot({ state, latestInsight, theme }: AIInsightB
     try {
       const apiKey = process.env.GEMINI_API_KEY;
       if (!apiKey) {
-        throw new Error("GEMINI_API_KEY missing");
+        throw new Error("GEMINI_API_KEY_NOT_CONFIGURED");
       }
-      const ai = new GoogleGenAI({ apiKey });
+      const genAI = new GoogleGenerativeAI(apiKey);
       const prompt = `
         You are the F1_ANALYTICS_CORE, a high-performance racing AI. 
         Answer the user's question about the race or generic F1 knowledge in a snappy, technical, retro-futuristic style.
@@ -49,14 +49,13 @@ export default function AIInsightBot({ state, latestInsight, theme }: AIInsightB
         User: ${userMsg}
       `;
 
-      const response = await ai.models.generateContent({
-        model: "gemini-3-flash-preview",
-        contents: prompt,
-      });
-
-      setMessages(prev => [...prev, { role: 'ai', text: response.text || "NO_RESPONSE_FOUND // BUFFER_EMPTY" }]);
+      const response = await genAI.getGenerativeModel({ model: "gemini-1.5-flash" }).generateContent(prompt);
+      setMessages(prev => [...prev, { role: 'ai', text: response.response.text() || "NO_RESPONSE_FOUND // BUFFER_EMPTY" }]);
     } catch (err) {
-      setMessages(prev => [...prev, { role: 'ai', text: "ERROR // CORE_OVERHEATED // RETRY_LATELY" }]);
+      const errorMsg = err instanceof Error && err.message === 'GEMINI_API_KEY_NOT_CONFIGURED' 
+        ? "ERROR // KEY_NOT_FOUND // CHECK_SETTINGS"
+        : "ERROR // CORE_OVERHEATED // RETRY_LATELY";
+      setMessages(prev => [...prev, { role: 'ai', text: errorMsg }]);
     } finally {
       setIsTyping(false);
     }

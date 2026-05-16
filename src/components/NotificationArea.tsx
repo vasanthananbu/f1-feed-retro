@@ -10,7 +10,7 @@ interface NotificationAreaProps {
 
 export default function NotificationArea({ notifications, onRemove }: NotificationAreaProps) {
   return (
-    <div className="fixed bottom-20 right-4 sm:bottom-32 sm:right-8 z-[1000] flex flex-col gap-2 w-[calc(100vw-2rem)] sm:w-80 pointer-events-none">
+    <div className="fixed bottom-24 right-4 sm:bottom-36 sm:right-8 z-[1000] flex flex-col gap-2 w-[calc(100vw-2rem)] sm:w-80 pointer-events-none">
       <AnimatePresence>
         {notifications.map((notif) => (
           <motion.div

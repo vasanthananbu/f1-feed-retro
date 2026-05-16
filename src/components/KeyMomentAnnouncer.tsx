@@ -61,6 +61,7 @@ export default function KeyMomentAnnouncer({ moments, onComplete }: KeyMomentAnn
           >
             {/* Close Button (Visible but pointer-events-auto) */}
             <button 
+              type="button"
               onClick={handleComplete}
               className="absolute top-10 right-10 pointer-events-auto z-[2100] bg-white/10 hover:bg-white/20 border border-white/20 px-3 py-1 text-[10px] text-white font-black uppercase tracking-widest backdrop-blur-md"
             >
@@ -112,6 +113,7 @@ export default function KeyMomentAnnouncer({ moments, onComplete }: KeyMomentAnn
               className="relative z-10 text-center px-8 py-6 bg-black border-4 border-white pixel-border shadow-[0_0_50px_rgba(255,255,255,0.3)]"
             >
               <button 
+                type="button"
                 onClick={handleComplete}
                 className="absolute -top-4 -right-4 w-8 h-8 bg-white text-black border-4 border-black flex items-center justify-center hover:bg-red-500 hover:text-white transition-colors pointer-events-auto"
                 title="Dismiss"

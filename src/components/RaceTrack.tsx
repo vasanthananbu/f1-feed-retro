@@ -57,7 +57,7 @@ export default function RaceTrack({ topDrivers, totalLaps, theme }: RaceTrackPro
         <div className="h-3 sm:h-4 curb-red-white border-b-4 border-black" />
 
         {/* Asphalt Center */}
-        <div className="flex-1 track-asphalt relative">
+        <div className="flex-1 track-asphalt relative z-10">
           {/* Lane Markings */}
           <div className="absolute inset-x-0 top-1/3 h-1 bg-white/10 border-t-2 border-dashed border-white/5" />
           <div className="absolute inset-x-0 top-2/3 h-1 bg-white/10 border-t-2 border-dashed border-white/5" />
@@ -85,7 +85,7 @@ export default function RaceTrack({ topDrivers, totalLaps, theme }: RaceTrackPro
                   animate={{ 
                     x: xPos, 
                     y: yPos,
-                    zIndex: isHovered ? 300 : 10 + (3 - idx) 
+                    zIndex: isHovered ? 1000 : 10 + (3 - idx) 
                   }}
                   transition={{ type: 'spring', stiffness: 70, damping: 20 }}
                   className="absolute pointer-events-auto"
@@ -125,7 +125,7 @@ export default function RaceTrack({ topDrivers, totalLaps, theme }: RaceTrackPro
                         initial={{ opacity: 0, scale: 0.9, y: 10 }}
                         animate={{ opacity: 1, scale: 1, y: 0 }}
                         exit={{ opacity: 0, scale: 0.9, y: 10 }}
-                        className={`absolute left-1/2 -translate-x-1/2 bottom-full mb-10 w-64 border-4 p-3 z-[500] shadow-[0_0_50px_rgba(0,0,0,0.3)] pointer-events-none ${theme === 'dark' ? 'bg-black border-white shadow-[0_0_50px_rgba(255,255,255,0.4)]' : 'bg-white border-black shadow-[0_0_50px_rgba(0,0,0,0.2)]'}`}
+                        className={`absolute left-1/2 -translate-x-1/2 bottom-[120%] mb-4 w-64 border-4 p-3 z-[2000] shadow-[0_0_50px_rgba(0,0,0,0.5)] pointer-events-none ${theme === 'dark' ? 'bg-[#0a0a0a] border-white shadow-[0_0_50px_rgba(255,255,255,0.4)]' : 'bg-white border-black shadow-[0_0_50px_rgba(0,0,0,0.2)]'}`}
                       >
                         <div className={`flex justify-between items-center mb-2 border-b-2 pb-1 ${theme === 'dark' ? 'border-white/20' : 'border-black/10'}`}>
                           <span className={`text-xs font-black uppercase italic tracking-tighter ${theme === 'dark' ? 'text-white' : 'text-black'}`}>{driver.full_name}</span>

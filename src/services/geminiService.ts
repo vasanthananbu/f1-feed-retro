@@ -1,17 +1,18 @@
-import { GoogleGenAI, Type } from "@google/genai";
+import { GoogleGenerativeAI } from "@google/generative-ai";
 import { LiveState, KeyMoment, SideQuest } from "../types";
 
-const modelName = "gemini-3-flash-preview";
+const modelName = "gemini-1.5-flash";
 
-let aiInstance: GoogleGenAI | null = null;
+let aiInstance: GoogleGenerativeAI | null = null;
 
-function getAI(): GoogleGenAI {
+function getAI(): GoogleGenerativeAI {
   if (!aiInstance) {
     const apiKey = process.env.GEMINI_API_KEY;
     if (!apiKey) {
-      throw new Error("GEMINI_API_KEY environment variable is required");
+      // In deployed apps, we might need a fallback or a clear error
+      throw new Error("GEMINI_API_KEY is not configured. Please add it to your project settings.");
     }
-    aiInstance = new GoogleGenAI({ apiKey });
+    aiInstance = new GoogleGenerativeAI(apiKey);
   }
   return aiInstance;
 }
@@ -29,11 +30,9 @@ export async function getRaceInsights(state: LiveState): Promise<string> {
 
   try {
     const ai = getAI();
-    const response = await ai.models.generateContent({
-      model: modelName,
-      contents: prompt,
-    });
-    return response.text || "NO_SIGNAL // AWAITING_FEED";
+    const model = ai.getGenerativeModel({ model: modelName });
+    const response = await model.generateContent(prompt);
+    return response.response.text() || "NO_SIGNAL // AWAITING_FEED";
   } catch (error) {
     console.error("Gemini Insight Error:", error);
     return "CONNECTION_INTERRUPTED // DATA_STREAM_CLEANING";
@@ -60,26 +59,14 @@ export async function generateAIQuest(state: LiveState): Promise<Partial<SideQue
 
   try {
     const ai = getAI();
-    const response = await ai.models.generateContent({
+    const model = ai.getGenerativeModel({ 
       model: modelName,
-      contents: prompt,
-      config: {
-        responseMimeType: "application/json",
-        responseSchema: {
-          type: Type.OBJECT,
-          properties: {
-            type: { type: Type.STRING, enum: ["POLL", "QUIZ"] },
-            title: { type: Type.STRING },
-            description: { type: Type.STRING },
-            options: { type: Type.ARRAY, items: { type: Type.STRING } },
-            correctOption: { type: Type.INTEGER }
-          },
-          required: ["type", "title", "description", "options"]
-        }
+      generationConfig: {
+        responseMimeType: "application/json"
       }
     });
-
-    return JSON.parse(response.text.trim());
+    const response = await model.generateContent(prompt);
+    return JSON.parse(response.response.text().trim());
   } catch (error) {
     console.error("Gemini Quest Error:", error);
     return null;
@@ -103,25 +90,14 @@ export async function generateAIKeyMoment(state: LiveState): Promise<Partial<Key
   
     try {
       const ai = getAI();
-      const response = await ai.models.generateContent({
+      const model = ai.getGenerativeModel({ 
         model: modelName,
-        contents: prompt,
-        config: {
-          responseMimeType: "application/json",
-          responseSchema: {
-            type: Type.OBJECT,
-            properties: {
-              type: { type: Type.STRING, enum: ["OVERTAKE", "ACCIDENT", "FASTEST_LAP", "PIT_STOP"] },
-              message: { type: Type.STRING },
-              driverName: { type: Type.STRING },
-              teamColour: { type: Type.STRING }
-            },
-            required: ["type", "message", "driverName", "teamColour"]
-          }
+        generationConfig: {
+          responseMimeType: "application/json"
         }
       });
-  
-      return JSON.parse(response.text.trim());
+      const response = await model.generateContent(prompt);
+      return JSON.parse(response.response.text().trim());
     } catch (error) {
       console.error("Gemini Moment Error:", error);
       return null;

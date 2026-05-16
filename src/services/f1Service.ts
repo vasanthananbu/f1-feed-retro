@@ -7,7 +7,17 @@ export async function getLatestSession(): Promise<Session | null> {
     const response = await fetch(`${BASE_URL}/sessions?session_name=Race`);
     if (!response.ok) return null;
     const sessions: Session[] = await response.json();
-    return sessions.sort((a, b) => b.session_key - a.session_key)[0] || null;
+    if (sessions && Array.isArray(sessions) && sessions.length > 0) {
+      return sessions.sort((a, b) => b.session_key - a.session_key)[0];
+    }
+    
+    // Fallback: search for any recent session if "Race" isn't active
+    const fallbackResponse = await fetch(`${BASE_URL}/sessions`);
+    const fallbackSessions: Session[] = await fallbackResponse.json();
+    if (fallbackSessions && Array.isArray(fallbackSessions) && fallbackSessions.length > 0) {
+      return fallbackSessions.sort((a, b) => b.session_key - a.session_key)[0];
+    }
+    return null;
   } catch (error) {
     console.error('Error fetching latest session:', error);
     return null;

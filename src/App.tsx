@@ -585,8 +585,10 @@ export default function App() {
                   positions: {},
                   laps: {},
                   telemetry: {},
+                  session: null,
                   lastUpdate: new Date().toISOString()
                 }));
+                addNotification(nextSimState ? "SIMULATION MODE ACTIVE" : "SWITCHING TO LIVE FEED", nextSimState ? "INFO" : "WARNING");
               }}
               className={`mt-2 text-[8px] font-bold border px-2 py-1 transition-all w-full sm:w-auto ${isSimulation ? 'bg-cyan-500/20 border-cyan-500 text-cyan-400' : (theme === 'dark' ? 'bg-white/5 border-white/10 text-gray-500 hover:border-white/40' : 'bg-black/5 border-black/30 text-black font-black hover:border-black/50 shadow-sm')}`}
             >
@@ -668,12 +670,24 @@ export default function App() {
 
               {sortedDriverNumbers.length === 0 && !loading && (
                  <div className="flex flex-col items-center justify-center p-20 border-2 border-dashed border-white/10 mt-2">
-                    <span className="text-red-500 font-mono italic animate-pulse">NO LIVE DATA STREAMS DETECTED</span>
+                    <span className="text-red-500 font-mono italic animate-pulse text-center">NO LIVE DATA STREAMS DETECTED<br/><span className="text-[10px] opacity-60">F1 API MAY BE OFFLINE OR BETWEEN SESSIONS</span></span>
                     <button 
-                      onClick={fetchData}
+                      type="button"
+                      onClick={(e) => { e.preventDefault(); fetchData(); }}
                       className="mt-4 px-4 py-2 border border-white/20 hover:bg-white/10 text-[10px] font-bold transition-colors"
                     >
                        RETRY LINK
+                    </button>
+                    <button 
+                      type="button"
+                      onClick={(e) => {
+                         e.preventDefault();
+                         setIsSimulation(true);
+                         setLoading(true);
+                      }}
+                      className="mt-2 text-[9px] text-cyan-500 hover:underline"
+                    >
+                       START VIRTUAL SIMULATION INSTEAD
                     </button>
                  </div>
               )}
