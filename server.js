@@ -8,10 +8,35 @@ const __dirname = path.dirname(__filename);
 const app = express();
 const PORT = process.env.PORT || 8080;
 
+app.use(express.json());
+
 // Serve static files from the 'dist' directory
 app.use(express.static(path.join(__dirname, 'dist')));
 
-// Handle SPA routing - deliver index.html for all non-file requests
+// Gemini API Proxy
+app.post('/api/gemini/*', async (req, res) => {
+  const apiKey = process.env.GEMINI_API_KEY;
+  if (!apiKey) {
+    return res.status(500).json({ error: 'GEMINI_API_KEY_NOT_SET_ON_SERVER' });
+  }
+
+  const pathSuffix = req.params[0];
+  const targetUrl = `https://generativelanguage.googleapis.com/${pathSuffix}?key=${apiKey}`;
+
+  try {
+    const response = await fetch(targetUrl, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(req.body)
+    });
+    const data = await response.json();
+    res.status(response.status).json(data);
+  } catch (error) {
+    res.status(500).json({ error: 'PROXY_STREAM_ERROR' });
+  }
+});
+
+// Handle SPA routing
 app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, 'dist', 'index.html'));
 });

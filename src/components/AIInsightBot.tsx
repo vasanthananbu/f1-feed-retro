@@ -28,13 +28,16 @@ export default function AIInsightBot({ state, latestInsight, theme }: AIInsightB
     if (!input.trim() || isTyping) return;
 
     const userMsg = input.trim();
-    setInput('');
-    setMessages(prev => [...prev, { role: 'user', text: userMsg }]);
-    setIsTyping(true);
-
     try {
+      setMessages(prev => [...prev, { role: 'user', text: userMsg }]);
+      setInput('');
+      setIsTyping(true);
+
       const apiKey = process.env.GEMINI_API_KEY || "AI_STUDIO_PROXY";
+      const isProduction = !window.location.hostname.includes('localhost');
       const genAI = new GoogleGenerativeAI(apiKey);
+      const modelOptions = isProduction ? { apiVersion: 'v1beta', baseUrl: '/api/gemini' } : { apiVersion: 'v1beta' };
+      const model = genAI.getGenerativeModel({ model: "gemini-3-flash-preview" }, modelOptions as any);
       const prompt = `
         You are the F1_ANALYTICS_CORE, a high-performance racing AI. 
         Answer the user's question about the race or generic F1 knowledge in a snappy, technical, retro-futuristic style.
