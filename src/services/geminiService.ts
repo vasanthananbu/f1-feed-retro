@@ -8,6 +8,13 @@ let aiInstance: GoogleGenerativeAI | null = null;
 function getAI(): GoogleGenerativeAI {
   if (!aiInstance) {
     const apiKey = process.env.GEMINI_API_KEY || "AI_STUDIO_PROXY";
+    const isProduction = typeof window !== 'undefined' && !window.location.hostname.includes('localhost');
+    
+    console.log(`GEMINI_INIT // MODE: ${isProduction ? 'PRODUCTION_PROXY' : 'LOCAL_DIRECT'}`);
+    if (!isProduction) {
+        console.log(`GEMINI_KEY_STATE: ${apiKey === 'AI_STUDIO_PROXY' ? 'DEFAULT_PROXY' : 'USER_DEFINED'}`);
+    }
+
     aiInstance = new GoogleGenerativeAI(apiKey);
   }
   return aiInstance;

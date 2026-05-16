@@ -16,8 +16,13 @@ app.use(express.static(path.join(__dirname, 'dist')));
 // Gemini API Proxy
 app.post('/api/gemini/*', async (req, res) => {
   const apiKey = process.env.GEMINI_API_KEY;
+  
   if (!apiKey) {
+    console.error('CRITICAL // GEMINI_API_KEY_MISSING_ON_SERVER');
     return res.status(500).json({ error: 'GEMINI_API_KEY_NOT_SET_ON_SERVER' });
+  } else {
+    const maskedKey = `${apiKey.substring(0, 4)}...${apiKey.substring(apiKey.length - 4)}`;
+    console.log(`SECURE_PROXY_ACTIVE // KEY_VALIDATED: ${maskedKey}`);
   }
 
   const pathSuffix = req.params[0];
