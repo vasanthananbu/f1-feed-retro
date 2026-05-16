@@ -1,0 +1,141 @@
+@import "tailwindcss";
+
+@theme {
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
+  --color-magenta-50: #fff0f6;
+  --color-magenta-100: #ffdeeb;
+  --color-magenta-200: #fcc2d7;
+  --color-magenta-300: #faa2c1;
+  --color-magenta-400: #f783ac;
+  --color-magenta-500: #f06595;
+  --color-magenta-600: #e64980;
+  --color-magenta-700: #d6336c;
+  --color-magenta-800: #c2255c;
+  --color-magenta-900: #a61e4d;
+}
+
+@layer utilities {
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+}
+
+:root {
+  --bg-primary: #050505;
+  --bg-secondary: #0a0a0a;
+  --text-primary: #e4e4e4;
+  --text-secondary: #888;
+  --border-primary: rgba(255, 255, 255, 0.1);
+  --accent-cyan: #22d3ee;
+  --lcd-bg: rgba(0, 255, 255, 0.03);
+  --track-asphalt: #333333;
+}
+
+[data-theme='light'] {
+  --bg-primary: #e4e3e0;
+  --bg-secondary: #d4d3d0;
+  --text-primary: #141414;
+  --text-secondary: #555;
+  --border-primary: rgba(0, 0, 0, 0.15);
+  --accent-cyan: #0891b2;
+  --lcd-bg: rgba(0, 0, 0, 0.05);
+  --track-asphalt: #555555;
+}
+
+@layer base {
+  body {
+    background-color: var(--bg-primary);
+    color: var(--text-primary);
+    font-family: var(--font-mono);
+    overflow-x: hidden;
+    transition: background-color 0.3s ease, color 0.3s ease;
+  }
+}
+
+@layer components {
+  .track-asphalt {
+    background-color: var(--track-asphalt);
+    background-image: 
+      radial-gradient(circle at 2px 2px, rgba(255,255,255,0.05) 1px, transparent 0);
+    background-size: 4px 4px;
+    transition: background-color 0.3s ease;
+  }
+
+  .track-grass {
+    background-color: #2d5a27;
+    background-image: 
+      radial-gradient(circle at 2px 2px, rgba(255,255,255,0.02) 1px, transparent 0);
+    background-size: 8px 8px;
+  }
+
+  .curb-red-white {
+    background: repeating-linear-gradient(
+      90deg,
+      #e80020,
+      #e80020 40px,
+      #ffffff 40px,
+      #ffffff 80px
+    );
+  }
+
+  .retro-glow-green {
+    text-shadow: 0 0 8px rgba(34, 255, 34, 0.6);
+    color: #22ff22;
+  }
+  
+  .retro-glow-yellow {
+    text-shadow: 0 0 8px rgba(255, 255, 34, 0.6);
+    color: #ffff22;
+  }
+  
+  .retro-glow-red {
+    text-shadow: 0 0 8px rgba(255, 34, 34, 0.6);
+    color: #ff2222;
+  }
+  
+  .retro-glow-cyan {
+    text-shadow: 0 0 8px rgba(34, 255, 255, 0.6);
+    color: #22ffff;
+  }
+
+  .retro-glow-magenta {
+    text-shadow: 0 0 8px rgba(255, 34, 255, 0.6);
+    color: #ff22ff;
+  }
+
+  .lcd-bg {
+    background: var(--lcd-bg);
+    background-image: repeating-linear-gradient(
+      0deg,
+      rgba(0, 0, 0, 0.05),
+      rgba(0, 0, 0, 0.05) 1px,
+      transparent 1px,
+      transparent 2px
+    );
+  }
+
+  .crt-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
+    z-index: 9999;
+    background-size: 100% 2px, 3px 100%;
+    pointer-events: none;
+  }
+
+  .pixel-border {
+    border: 2px solid #222;
+    box-shadow: 
+      -4px 0 0 0 #000,
+      4px 0 0 0 #000,
+      0 -4px 0 0 #000,
+      0 4px 0 0 #000;
+  }
+}
