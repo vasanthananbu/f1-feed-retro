@@ -33,9 +33,7 @@ export async function getRaceInsights(state: LiveState): Promise<string> {
 
   try {
     const ai = getAI();
-    const isProduction = typeof window !== 'undefined' && !window.location.hostname.includes('localhost');
-    const modelOptions = isProduction ? { apiVersion: 'v1beta', baseUrl: '/api/gemini' } : { apiVersion: 'v1beta' };
-    const model = ai.getGenerativeModel({ model: "gemini-3-flash-preview" }, modelOptions as any);
+    const model = ai.getGenerativeModel({ model: "gemini-2.5-flash" }, { apiVersion: 'v1' });
     const response = await model.generateContent(prompt);
     return response.response.text() || "NO_SIGNAL // AWAITING_FEED";
   } catch (error) {
@@ -64,9 +62,7 @@ export async function generateAIQuest(state: LiveState): Promise<Partial<SideQue
 
   try {
     const ai = getAI();
-    const isProduction = typeof window !== 'undefined' && !window.location.hostname.includes('localhost');
-    const modelOptions = isProduction ? { apiVersion: 'v1beta', baseUrl: '/api/gemini' } : { apiVersion: 'v1beta' };
-    const model = ai.getGenerativeModel({ model: "gemini-3-flash-preview" }, modelOptions as any);
+    const model = ai.getGenerativeModel({ model: "gemini-2.5-flash" }, { apiVersion: 'v1' });
     const response = await model.generateContent(prompt);
     return JSON.parse(response.response.text().trim());
   } catch (error) {
@@ -92,7 +88,7 @@ export async function generateAIKeyMoment(state: LiveState): Promise<Partial<Key
   
     try {
       const ai = getAI();
-      const model = ai.getGenerativeModel({ model: "gemini-3-flash-preview" }, { apiVersion: 'v1beta' });
+      const model = ai.getGenerativeModel({ model: "gemini-2.5-flash" }, { apiVersion: 'v1' });
       const response = await model.generateContent(prompt);
       return JSON.parse(response.response.text().trim());
     } catch (error) {

@@ -35,7 +35,7 @@ export default function AIInsightBot({ state, latestInsight, theme }: AIInsightB
 
       const apiKey = process.env.GEMINI_API_KEY || "AI_STUDIO_PROXY";
       const genAI = new GoogleGenerativeAI(apiKey);
-      const model = genAI.getGenerativeModel({ model: "gemini-3-flash-preview" }, { apiVersion: 'v1beta' });
+      const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" }, { apiVersion: 'v1' });
       const prompt = `
         You are the F1_ANALYTICS_CORE, a high-performance racing AI. 
         Answer the user's question about the race or generic F1 knowledge in a snappy, technical, retro-futuristic style.
