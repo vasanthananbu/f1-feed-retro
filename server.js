@@ -26,9 +26,12 @@ app.post('/api/gemini/*', async (req, res) => {
   }
 
   const pathSuffix = req.params[0];
-  const targetUrl = `https://generativelanguage.googleapis.com/${pathSuffix}?key=${apiKey}`;
+  // Remove any existing key from the suffix to avoid duplicates
+  const cleanSuffix = pathSuffix.split('?')[0];
+  const targetUrl = `https://generativelanguage.googleapis.com/${cleanSuffix}?key=${apiKey}`;
 
   try {
+    console.log(`PROXY_FORWARDING // TO: ${targetUrl.split('?')[0]}`);
     const response = await fetch(targetUrl, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
