@@ -246,16 +246,25 @@ export default function App() {
 
       let session = state.session;
       if (!session) {
-        session = await f1Service.getLatestSession();
-        if (!session) throw new Error('No active F1 session found');
+        try {
+          session = await f1Service.getLatestSession();
+        } catch (e) {
+          console.warn('Session fetch failed:', e);
+          setLoading(false);
+          return;
+        }
+        if (!session) {
+          setLoading(false);
+          return;
+        }
       }
 
       const [driversListRaw, positionsListRaw, lapsListRaw, pitsListRaw, intervalsListRaw] = await Promise.all([
         Object.keys(state.drivers).length === 0 ? f1Service.getDrivers(session.session_key) : Promise.resolve([]),
-        f1Service.getLatestPositions(session.session_key),
-        f1Service.getLatestLaps(session.session_key),
-        f1Service.getPits(session.session_key),
-        f1Service.getLatestIntervals(session.session_key)
+        f1Service.getLatestPositions(session.session_key, state.lastUpdate),
+        f1Service.getLatestLaps(session.session_key, state.lastUpdate),
+        f1Service.getPits(session.session_key, state.lastUpdate),
+        f1Service.getLatestIntervals(session.session_key, state.lastUpdate)
       ]);
 
       const driversList = Array.isArray(driversListRaw) ? driversListRaw : [];
@@ -264,7 +273,9 @@ export default function App() {
       const intervalsList = Array.isArray(intervalsListRaw) ? intervalsListRaw : [];
 
       // Fetch race control messages for penalties
-      const raceControlResponse = await fetch(`https://api.openf1.org/v1/race_control?session_key=${session.session_key}`);
+      let raceControlUrl = `https://api.openf1.org/v1/race_control?session_key=${session.session_key}`;
+      if (state.lastUpdate) raceControlUrl += `&date>=${state.lastUpdate}`;
+      const raceControlResponse = await fetch(raceControlUrl);
       const raceControlData = await raceControlResponse.json();
       
       const newPenalties: Record<number, string[]> = {};
@@ -300,7 +311,7 @@ export default function App() {
 
       // Fetch telemetry only for top 3
       const telemetryResults = await Promise.all(
-        top3Numbers.map(num => f1Service.getLatestTelemetry(session!.session_key, num))
+        top3Numbers.map(num => f1Service.getLatestTelemetry(session!.session_key, num, state.lastUpdate))
       );
 
       const nextTelemetry: Record<number, Telemetry> = { ...state.telemetry };
@@ -417,7 +428,7 @@ export default function App() {
 
   useEffect(() => {
     fetchData();
-    pollInterval.current = setInterval(fetchData, isSimulation ? 3000 : 10000); // Poll faster in simulation
+    pollInterval.current = setInterval(fetchData, isSimulation ? 3000 : 30000); // 30s to respect OpenF1 rate limits
     return () => {
       if (pollInterval.current) clearInterval(pollInterval.current);
     };

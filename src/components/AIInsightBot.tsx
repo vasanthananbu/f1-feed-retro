@@ -33,10 +33,7 @@ export default function AIInsightBot({ state, latestInsight, theme }: AIInsightB
     setIsTyping(true);
 
     try {
-      const apiKey = process.env.GEMINI_API_KEY;
-      if (!apiKey) {
-        throw new Error("GEMINI_API_KEY_NOT_CONFIGURED");
-      }
+      const apiKey = process.env.GEMINI_API_KEY || "AI_STUDIO_PROXY";
       const genAI = new GoogleGenerativeAI(apiKey);
       const prompt = `
         You are the F1_ANALYTICS_CORE, a high-performance racing AI. 
@@ -49,9 +46,10 @@ export default function AIInsightBot({ state, latestInsight, theme }: AIInsightB
         User: ${userMsg}
       `;
 
-      const response = await genAI.getGenerativeModel({ model: "gemini-1.5-flash" }).generateContent(prompt);
+      const response = await genAI.getGenerativeModel({ model: "gemini-3-flash-preview" }, { apiVersion: 'v1beta' }).generateContent(prompt);
       setMessages(prev => [...prev, { role: 'ai', text: response.response.text() || "NO_RESPONSE_FOUND // BUFFER_EMPTY" }]);
     } catch (err) {
+      console.error("Gemini Bot Error:", err);
       const errorMsg = err instanceof Error && err.message === 'GEMINI_API_KEY_NOT_CONFIGURED' 
         ? "ERROR // KEY_NOT_FOUND // CHECK_SETTINGS"
         : "ERROR // CORE_OVERHEATED // RETRY_LATELY";

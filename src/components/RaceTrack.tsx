@@ -35,7 +35,7 @@ export default function RaceTrack({ topDrivers, totalLaps, theme }: RaceTrackPro
   return (
     <div ref={containerRef} className="w-full max-w-6xl mb-8 relative border-4 border-[var(--border-primary)] p-0 bg-[var(--bg-secondary)] shadow-[0_20px_50px_rgba(0,0,0,0.3)] pixel-border">
       {/* Header Bar */}
-      <div className={`${theme === 'dark' ? 'bg-red-600' : 'bg-red-700'} px-4 py-1 flex items-center justify-between border-b-4 border-[var(--border-primary)] relative z-20`}>
+      <div className={`${theme === 'dark' ? 'bg-red-600' : 'bg-red-700'} px-4 py-1 flex items-center justify-between border-b-4 border-[var(--border-primary)] relative z-10`}>
         <div className="flex items-center gap-2 text-[10px] font-black text-white uppercase tracking-widest">
           <Milestone className="w-3 h-3" />
           <span className="hidden xs:inline">CHAMPIONSHIP CIRCUIT // TOP 3</span>
@@ -45,7 +45,7 @@ export default function RaceTrack({ topDrivers, totalLaps, theme }: RaceTrackPro
       </div>
 
       {/* Track Layout */}
-      <div className="relative h-64 sm:h-72 w-full flex flex-col">
+      <div className="relative h-64 sm:h-72 w-full flex flex-col z-20">
         {/* Grass Top */}
         <div className="h-4 sm:h-6 track-grass border-b-4 border-black flex items-center justify-around overflow-hidden">
           {Array.from({ length: 14 }).map((_, i) => (

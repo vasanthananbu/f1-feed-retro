@@ -8,6 +8,9 @@ export async function getLatestSession(): Promise<Session | null> {
     if (!response.ok) return null;
     const sessions: Session[] = await response.json();
     if (sessions && Array.isArray(sessions) && sessions.length > 0) {
+      // Prioritize the user's suggested session key if it exists in the active list
+      const preferred = sessions.find(s => s.session_key === 9839);
+      if (preferred) return preferred;
       return sessions.sort((a, b) => b.session_key - a.session_key)[0];
     }
     
@@ -35,60 +38,74 @@ export async function getDrivers(session_key: number): Promise<Driver[]> {
   }
 }
 
-export async function getLatestPositions(session_key: number): Promise<Position[]> {
+export async function getLatestPositions(session_key: number, dateAfter?: string): Promise<Position[]> {
   try {
-    const response = await fetch(`${BASE_URL}/positions?session_key=${session_key}`);
+    let url = `${BASE_URL}/positions?session_key=${session_key}`;
+    if (dateAfter) url += `&date>=${dateAfter}`;
+    const response = await fetch(url);
+    if (response.status === 429 || response.status === 404) return [];
+    if (!response.ok) return [];
     const data = await response.json();
     return Array.isArray(data) ? data : [];
   } catch (error) {
-    console.error('Error fetching positions:', error);
     return [];
   }
 }
 
-export async function getLatestLaps(session_key: number): Promise<Lap[]> {
+export async function getLatestLaps(session_key: number, dateAfter?: string): Promise<Lap[]> {
   try {
-    const response = await fetch(`${BASE_URL}/laps?session_key=${session_key}`);
+    let url = `${BASE_URL}/laps?session_key=${session_key}`;
+    if (dateAfter) url += `&date>=${dateAfter}`;
+    const response = await fetch(url);
+    if (response.status === 429 || response.status === 404) return [];
+    if (!response.ok) return [];
     const data = await response.json();
     return Array.isArray(data) ? data : [];
   } catch (error) {
-    console.error('Error fetching laps:', error);
     return [];
   }
 }
 
-export async function getPits(session_key: number): Promise<Pit[]> {
+export async function getPits(session_key: number, dateAfter?: string): Promise<Pit[]> {
   try {
-    const pitResponse = await fetch(`${BASE_URL}/pit?session_key=${session_key}`);
-    if (pitResponse.ok) {
-        const data = await pitResponse.json();
+    let url = `${BASE_URL}/pit?session_key=${session_key}`;
+    if (dateAfter) url += `&date>=${dateAfter}`;
+    const response = await fetch(url);
+    if (response.status === 429 || response.status === 404) return [];
+    if (response.ok) {
+        const data = await response.json();
         return Array.isArray(data) ? data : [];
     }
     return [];
   } catch (error) {
-    console.error('Error fetching pits:', error);
     return [];
   }
 }
 
-export async function getLatestTelemetry(session_key: number, driver_number: number): Promise<Telemetry | null> {
+export async function getLatestTelemetry(session_key: number, driver_number: number, dateAfter?: string): Promise<Telemetry | null> {
   try {
-    const response = await fetch(`${BASE_URL}/car_data?session_key=${session_key}&driver_number=${driver_number}`);
+    let url = `${BASE_URL}/car_data?session_key=${session_key}&driver_number=${driver_number}`;
+    if (dateAfter) url += `&date>=${dateAfter}`;
+    const response = await fetch(url);
+    if (response.status === 429 || response.status === 404) return null;
+    if (!response.ok) return null;
     const data: Telemetry[] = await response.json();
-    return data[data.length - 1] || null;
+    return data && data.length > 0 ? data[data.length - 1] : null;
   } catch (error) {
-    console.error(`Error fetching telemetry for driver ${driver_number}:`, error);
     return null;
   }
 }
 
-export async function getLatestIntervals(session_key: number): Promise<Interval[]> {
+export async function getLatestIntervals(session_key: number, dateAfter?: string): Promise<Interval[]> {
   try {
-    const response = await fetch(`${BASE_URL}/intervals?session_key=${session_key}`);
+    let url = `${BASE_URL}/intervals?session_key=${session_key}`;
+    if (dateAfter) url += `&date>=${dateAfter}`;
+    const response = await fetch(url);
+    if (response.status === 429 || response.status === 404) return [];
+    if (!response.ok) return [];
     const data = await response.json();
     return Array.isArray(data) ? data : [];
   } catch (error) {
-    console.error('Error fetching intervals:', error);
     return [];
   }
 }

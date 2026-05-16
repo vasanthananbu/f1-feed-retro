@@ -7,12 +7,13 @@ let aiInstance: GoogleGenerativeAI | null = null;
 
 function getAI(): GoogleGenerativeAI {
   if (!aiInstance) {
-    const apiKey = process.env.GEMINI_API_KEY;
+    const apiKey = process.env.GEMINI_API_KEY || "AI_STUDIO_PROXY";
     if (!apiKey) {
-      // In deployed apps, we might need a fallback or a clear error
-      throw new Error("GEMINI_API_KEY is not configured. Please add it to your project settings.");
+      // In some environments, the proxy handles auth, but SDK needs a string.
+      aiInstance = new GoogleGenerativeAI("AI_STUDIO_PROXY");
+    } else {
+      aiInstance = new GoogleGenerativeAI(apiKey);
     }
-    aiInstance = new GoogleGenerativeAI(apiKey);
   }
   return aiInstance;
 }
@@ -30,7 +31,7 @@ export async function getRaceInsights(state: LiveState): Promise<string> {
 
   try {
     const ai = getAI();
-    const model = ai.getGenerativeModel({ model: modelName });
+    const model = ai.getGenerativeModel({ model: "gemini-3-flash-preview" }, { apiVersion: 'v1beta' });
     const response = await model.generateContent(prompt);
     return response.response.text() || "NO_SIGNAL // AWAITING_FEED";
   } catch (error) {
@@ -59,12 +60,7 @@ export async function generateAIQuest(state: LiveState): Promise<Partial<SideQue
 
   try {
     const ai = getAI();
-    const model = ai.getGenerativeModel({ 
-      model: modelName,
-      generationConfig: {
-        responseMimeType: "application/json"
-      }
-    });
+    const model = ai.getGenerativeModel({ model: "gemini-3-flash-preview" }, { apiVersion: 'v1beta' });
     const response = await model.generateContent(prompt);
     return JSON.parse(response.response.text().trim());
   } catch (error) {
@@ -90,12 +86,7 @@ export async function generateAIKeyMoment(state: LiveState): Promise<Partial<Key
   
     try {
       const ai = getAI();
-      const model = ai.getGenerativeModel({ 
-        model: modelName,
-        generationConfig: {
-          responseMimeType: "application/json"
-        }
-      });
+      const model = ai.getGenerativeModel({ model: "gemini-3-flash-preview" }, { apiVersion: 'v1beta' });
       const response = await model.generateContent(prompt);
       return JSON.parse(response.response.text().trim());
     } catch (error) {
