@@ -97,25 +97,31 @@ export default function RaceTrack({ topDrivers, totalLaps, theme }: RaceTrackPro
                     {idx === 0 && '👑 '}{driver.name_acronym}
                   </div>
 
-                  {/* NES Style Car Sprite */}
-                  <div className="relative w-16 sm:w-20 h-8 sm:h-10 flex items-center justify-center cursor-help">
-                    {/* Tires */}
-                    <div className="absolute left-2 sm:left-3 -top-1.5 w-3 sm:w-4 h-2.5 sm:h-3 bg-black rounded-sm border border-white/10" />
-                    <div className="absolute left-2 sm:left-3 -bottom-1.5 w-3 sm:w-4 h-2.5 sm:h-3 bg-black rounded-sm border border-white/10" />
-                    <div className="absolute right-3 sm:right-4 -top-1.5 w-3 sm:w-4 h-2.5 sm:h-3 bg-black rounded-sm border border-white/10" />
-                    <div className="absolute right-3 sm:right-4 -bottom-1.5 w-3 sm:w-4 h-2.5 sm:h-3 bg-black rounded-sm border border-white/10" />
+                  {/* Retro 8-Bit Car Sprite */}
+                  <div className="relative w-16 sm:w-20 h-8 sm:h-10 flex items-center justify-center cursor-help car-pixel-shadow">
+                    {/* Retro Block Tires */}
+                    <div className="absolute left-2 sm:left-3 -top-1 w-4 sm:w-5 h-2.5 bg-black border-r-2 border-white/20" />
+                    <div className="absolute left-2 sm:left-3 -bottom-1 w-4 sm:w-5 h-2.5 bg-black border-r-2 border-white/20" />
+                    <div className="absolute right-3 sm:right-4 -top-1 w-4 sm:w-5 h-2.5 bg-black border-l-2 border-white/20" />
+                    <div className="absolute right-3 sm:right-4 -bottom-1 w-4 sm:w-5 h-2.5 bg-black border-l-2 border-white/20" />
                     
-                    {/* Rear Wing */}
-                    <div className="absolute left-0 top-1 bottom-1 w-2 sm:w-3 bg-black rounded-sm" />
-                    
-                    {/* Main Body */}
-                    <div className="w-11 sm:w-14 h-5 sm:h-6 rounded-sm border-2 border-black relative overflow-hidden" style={{ backgroundColor: `#${driver.team_colour}` }}>
-                       <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent" />
-                       <div className="absolute inset-y-1 right-4 sm:right-5 w-2 sm:w-3 bg-black/60 rounded-full border border-white/20" /> {/* Cockpit */}
+                    {/* Oversized Rear Wing (Retro style) */}
+                    <div className="absolute left-0 top-0.5 bottom-0.5 w-3 sm:w-4 bg-black flex flex-col justify-between p-[1px]">
+                      <div className="h-full w-full border-r-2 border-white/10" />
                     </div>
                     
-                    {/* Front Nose */}
-                    <div className="absolute right-0.5 sm:right-1 top-2 bottom-2 w-3 sm:w-4 bg-black rounded-r-xl" />
+                    {/* Pixelated Main Body */}
+                    <div className="w-12 sm:w-15 h-5 sm:h-6 border-2 border-black relative overflow-hidden" style={{ backgroundColor: `#${driver.team_colour}` }}>
+                       {/* Team Accents */}
+                       <div className="absolute top-0 left-0 right-0 h-[2px] bg-white/30" />
+                       <div className="absolute bottom-0 left-0 right-0 h-[2px] bg-black/30" />
+                       
+                       {/* Cockpit Block */}
+                       <div className="absolute inset-y-1 right-5 sm:right-6 w-3 sm:w-4 bg-black border border-white/40" /> 
+                    </div>
+                    
+                    {/* Sharp Front Nose */}
+                    <div className="absolute right-0.5 sm:right-1 top-2 bottom-2 w-4 sm:w-5 bg-black" />
                   </div>
 
                   {/* Hover Panel */}
